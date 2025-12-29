@@ -1,0 +1,1 @@
+config.sign_out_via = :delete
