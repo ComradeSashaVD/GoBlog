@@ -23,5 +23,13 @@ module GoBlog
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.generators do |g|
+      g.orm :active_record
+      g.test_framework nil  # или :test_unit, :rspec
+      g.stylesheets false
+      g.javascripts false
+      g.helper false
+    end
   end
 end

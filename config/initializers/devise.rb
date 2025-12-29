@@ -1,1 +1,4 @@
-config.sign_out_via = :delete
+Devise.setup do |config|
+  config.sign_out_via = :delete
+
+end
