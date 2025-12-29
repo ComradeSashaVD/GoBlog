@@ -1,15 +1,82 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>GoBlog</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<head>
+  <title>Blog App</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <%= link_to 'Блог', root_path, class: 'navbar-brand' %>
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-  </head>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <% if user_signed_in? %>
+          <li class="nav-item">
+            <%= link_to 'Новый пост', new_post_path, class: 'nav-link' %>
+          </li>
+          <li class="nav-item">
+            <%= link_to 'Мои подписки', my_subscriptions_path, class: 'nav-link' %>
+          </li>
+        <% end %>
+      </ul>
 
-  <body>
-    <%= yield %>
-  </body>
+      <ul class="navbar-nav">
+        <% if user_signed_in? %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-bell"></i>
+              <% if @unread_notifications_count > 0 %>
+                <span class="badge bg-danger"><%= @unread_notifications_count %></span>
+              <% end %>
+            </a>
+            <div class="dropdown-menu">
+              <% @notifications.each do |notification| %>
+                <%= link_to notification.message, notifications_path, class: 'dropdown-item' %>
+              <% end %>
+              <div class="dropdown-divider"></div>
+              <%= link_to 'Все уведомления', notifications_path, class: 'dropdown-item' %>
+            </div>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <%= current_user.username %>
+            </a>
+            <div class="dropdown-menu">
+              <%= link_to 'Мой профиль', user_path(current_user), class: 'dropdown-item' %>
+              <%= link_to 'Редактировать профиль', edit_user_registration_path, class: 'dropdown-item' %>
+              <div class="dropdown-divider"></div>
+              <%= link_to 'Выйти', destroy_user_session_path, method: :delete, class: 'dropdown-item' %>
+            </div>
+          </li>
+        <% else %>
+          <li class="nav-item">
+            <%= link_to 'Войти', new_user_session_path, class: 'nav-link' %>
+          </li>
+          <li class="nav-item">
+            <%= link_to 'Регистрация', new_user_registration_path, class: 'nav-link' %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <% if notice %>
+    <div class="alert alert-success"><%= notice %></div>
+  <% end %>
+  <% if alert %>
+    <div class="alert alert-danger"><%= alert %></div>
+  <% end %>
+
+  <%= yield %>
+</div>
+</body>
 </html>

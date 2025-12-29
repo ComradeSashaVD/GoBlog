@@ -1,0 +1,64 @@
+<div class="row">
+  <div class="col-md-8">
+    <h1>Все посты</h1>
+
+    <% @posts.each do |post| %>
+      <div class="card mb-3">
+        <% if post.image.attached? %>
+          <%= image_tag post.image, class: 'card-img-top' %>
+        <% end %>
+
+        <div class="card-body">
+          <h5 class="card-title">
+            <%= link_to post.title, post %>
+          </h5>
+          <p class="card-text">
+            <%= truncate(post.content, length: 200) %>
+          </p>
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              Автор: <%= link_to post.user.username, post.user %>
+              | <%= time_ago_in_words(post.created_at) %> назад
+            </small>
+            <div>
+              <span class="badge bg-success">
+                <i class="bi bi-hand-thumbs-up"></i> <%= post.likes_count %>
+              </span>
+              <span class="badge bg-danger ms-1">
+                <i class="bi bi-hand-thumbs-down"></i> <%= post.dislikes_count %>
+              </span>
+              <span class="badge bg-primary ms-1">
+                <i class="bi bi-chat"></i> <%= post.comments.count %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @posts.empty? %>
+      <div class="alert alert-info">
+        Пока нет постов. Будьте первым!
+      </div>
+    <% end %>
+
+    <div class="d-flex justify-content-center">
+      <%= paginate @posts %>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Статистика</h5>
+        <p class="card-text">
+          Всего постов: <%= Post.count %><br>
+          Всего пользователей: <%= User.count %>
+        </p>
+        <% if user_signed_in? %>
+          <%= link_to 'Новый пост', new_post_path, class: 'btn btn-primary w-100' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
