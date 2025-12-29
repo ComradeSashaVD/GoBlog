@@ -5,16 +5,30 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
-  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-  <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+
+  <!-- Bootstrap CSS через CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons через CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+  <!-- Bootstrap JS через CDN (для выпадающих меню и других компонентов) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+
+  <!-- УБРАНЫ ЭТИ СТРОКИ: -->
+  <%# <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %> %>
+  <%# <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %> %>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container">
     <%= link_to 'Блог', root_path, class: 'navbar-brand' %>
 
-    <div class="collapse navbar-collapse">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
         <% if user_signed_in? %>
           <li class="nav-item">
@@ -31,15 +45,17 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
               <i class="bi bi-bell"></i>
-              <% if @unread_notifications_count > 0 %>
+              <% if @unread_notifications_count && @unread_notifications_count > 0 %>
                 <span class="badge bg-danger"><%= @unread_notifications_count %></span>
               <% end %>
             </a>
             <div class="dropdown-menu">
-              <% @notifications.each do |notification| %>
-                <%= link_to notification.message, notifications_path, class: 'dropdown-item' %>
+              <% if @notifications && @notifications.any? %>
+                <% @notifications.each do |notification| %>
+                  <%= link_to notification.message, notifications_path, class: 'dropdown-item' %>
+                <% end %>
+                <div class="dropdown-divider"></div>
               <% end %>
-              <div class="dropdown-divider"></div>
               <%= link_to 'Все уведомления', notifications_path, class: 'dropdown-item' %>
             </div>
           </li>
@@ -69,13 +85,22 @@
 </nav>
 
 <div class="container mt-4">
+  <!-- Flash сообщения -->
   <% if notice %>
-    <div class="alert alert-success"><%= notice %></div>
-  <% end %>
-  <% if alert %>
-    <div class="alert alert-danger"><%= alert %></div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <%= notice %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
   <% end %>
 
+  <% if alert %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <%= alert %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% end %>
+
+  <!-- Основной контент -->
   <%= yield %>
 </div>
 </body>
