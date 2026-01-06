@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="h3 mb-0">Редактировать пост</h1>
+        </div>
+        <div class="card-body">
+          <%= form_with(model: @post, local: true, html: { multipart: true }) do |form| %>
+            <% if @post.errors.any? %>
+              <div class="alert alert-danger">
+                <h4 class="alert-heading">Ошибки:</h4>
+                <ul>
+                  <% @post.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= form.label :title, "Заголовок", class: "form-label" %>
+              <%= form.text_field :title, class: "form-control", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :content, "Содержание", class: "form-label" %>
+              <%= form.text_area :content, class: "form-control", rows: 10, required: true %>
+            </div>
+
+            <div class="mb-3">
+              <% if @post.image.attached? %>
+                <div class="mb-2">
+                  <p>Текущее изображение:</p>
+                  <%= image_tag @post.image, class: "img-fluid rounded", style: "max-height: 200px;" %>
+                  <div class="form-check mt-2">
+                    <%= form.check_box :remove_image, class: "form-check-input" %>
+                    <%= form.label :remove_image, "Удалить изображение", class: "form-check-label" %>
+                  </div>
+                </div>
+              <% end %>
+
+              <%= form.label :image, "Новое изображение", class: "form-label" %>
+              <%= form.file_field :image, class: "form-control", accept: "image/*" %>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <%= link_to 'Отмена', @post, class: 'btn btn-secondary' %>
+              <%= form.submit "Обновить пост", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

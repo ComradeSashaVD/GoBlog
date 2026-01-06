@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: [:show, :edit, :update, :destroy]
+  before_action :set_post, only: [:show, :edit, :update, :destroy, :like, :dislike, :unvote]
   after_action :verify_authorized, except: [:index, :show]
 
   def index
@@ -47,17 +47,17 @@ class PostsController < ApplicationController
   end
 
   def like
-    @post = Post.find(params[:id])
+    authorize @post, :vote?  # Используем политику vote? для лайков
     vote(1)
   end
 
   def dislike
-    @post = Post.find(params[:id])
+    authorize @post, :vote?  # Используем политику vote? для дизлайков
     vote(-1)
   end
 
   def unvote
-    @post = Post.find(params[:id])
+    authorize @post, :vote?  # Используем политику vote? для удаления голоса
     @post.likes.find_by(user: current_user)&.destroy
     redirect_back fallback_location: @post
   end

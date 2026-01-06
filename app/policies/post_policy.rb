@@ -15,6 +15,10 @@ class PostPolicy < ApplicationPolicy
     user.present? && (record.user == user || user.admin?)
   end
 
+  def vote?
+    user.present?
+  end
+
   class Scope < Scope
     def resolve
       scope.all

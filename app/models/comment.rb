@@ -5,7 +5,7 @@ class Comment < ApplicationRecord
 
   validates :content, presence: true, length: { minimum: 2, maximum: 500 }
 
-  after_create :create_notification
+  #after_create :create_notification
 
   private
 

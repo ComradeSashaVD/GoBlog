@@ -7,17 +7,31 @@ class UsersController < ApplicationController
   def subscribe
     @user = User.find(params[:id])
 
-    unless current_user.subscribed_to?(@user)
-      current_user.subscriptions.create(subscribed_to: @user)
+    if current_user == @user
+      redirect_back fallback_location: @user, alert: 'Нельзя подписаться на себя'
+      return
     end
 
-    redirect_back fallback_location: @user
+    unless current_user.subscribed_to?(@user)
+      Subscription.create(subscriber_id: current_user.id, subscribed_to_id: @user.id)
+    end
+
+    redirect_back fallback_location: @user, notice: 'Подписка оформлена'
   end
 
   def unsubscribe
     @user = User.find(params[:id])
-    current_user.subscriptions.find_by(subscribed_to: @user)&.destroy
-    redirect_back fallback_location: @user
+    subscription = Subscription.find_by(
+      subscriber_id: current_user.id,
+      subscribed_to_id: @user.id
+    )
+
+    if subscription
+      subscription.destroy
+      redirect_back fallback_location: @user, notice: 'Подписка отменена'
+    else
+      redirect_back fallback_location: @user, alert: 'Вы не подписаны на этого пользователя'
+    end
   end
 
   def subscriptions

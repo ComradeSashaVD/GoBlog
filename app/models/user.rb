@@ -13,7 +13,7 @@ class User < ApplicationRecord
 
   has_many :subscriptions, foreign_key: 'subscriber_id',
            dependent: :destroy
-  has_many :subscribed_to_users, through: :subscriptions,
+  has_many :followed_users, through: :subscriptions,
            source: :subscribed_to
 
   has_many :notifications, dependent: :destroy
@@ -26,7 +26,8 @@ class User < ApplicationRecord
   end
 
   def subscribed_to?(user)
-    subscriptions.exists?(subscribed_to_id: user.id)
+    # Простая проверка
+    Subscription.exists?(subscriber_id: id, subscribed_to_id: user.id)
   end
 
   def unread_notifications_count

@@ -31,7 +31,7 @@ class Post < ApplicationRecord
     like&.value
   end
 
-  after_create :notify_subscribers
+  #after_create :notify_subscribers
 
   private
 

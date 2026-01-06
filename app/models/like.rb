@@ -8,8 +8,8 @@
   }
   validates :value, inclusion: { in: [-1, 1] }
 
-  after_create :create_notification
-  after_destroy :destroy_related_notification
+  #after_create :create_notification
+  #after_destroy :destroy_related_notification
 
   private
 

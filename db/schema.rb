@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_29_104025) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_06_012233) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -91,6 +91,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_29_104025) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["subscribed_to_id"], name: "index_subscriptions_on_subscribed_to_id"
+    t.index ["subscriber_id", "subscribed_to_id"], name: "index_subscriptions_on_subscriber_id_and_subscribed_to_id", unique: true
     t.index ["subscriber_id"], name: "index_subscriptions_on_subscriber_id"
   end
 
@@ -116,6 +117,4 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_29_104025) do
   add_foreign_key "likes", "users"
   add_foreign_key "notifications", "users"
   add_foreign_key "posts", "users"
-  add_foreign_key "subscriptions", "subscribed_tos"
-  add_foreign_key "subscriptions", "subscribers"
 end
