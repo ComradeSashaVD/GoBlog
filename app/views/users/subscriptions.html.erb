@@ -1,0 +1,76 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="h3 mb-0">Мои подписки</h1>
+        </div>
+
+        <div class="card-body">
+          <% if @subscriptions.any? %>
+            <div class="list-group">
+              <% @subscriptions.each do |user| %>
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    <div class="me-3">
+                      <i class="bi bi-person-circle fs-4"></i>
+                    </div>
+                    <div>
+                      <h5 class="mb-1">
+                        <%= link_to user.username, user_path(user), class: 'text-decoration-none' %>
+                      </h5>
+                      <p class="mb-1 text-muted small">
+                        <%= user.full_name %>
+                        <% if user.posts.any? %>
+                          <% count = user.posts.count
+                            if count == 1
+                              text = "пост"
+                            elsif count.between?(2, 4)
+                              text = "поста"
+                            else
+                              text = "постов"
+                            end
+                          %>
+                          • <%= count %> <%= text %>
+                        <% end %>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <%= button_to 'Отписаться', unsubscribe_user_path(user),
+                                  method: :delete,
+                                  class: 'btn btn-sm btn-outline-danger',
+                                  data: { turbo_confirm: 'Вы уверены, что хотите отписаться?' } %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+
+            <% if @subscriptions.respond_to?(:total_pages) && @subscriptions.total_pages > 1 %>
+              <div class="mt-4 d-flex justify-content-center">
+                <%= paginate @subscriptions %>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="text-center py-5">
+              <i class="bi bi-people fs-1 text-muted mb-3"></i>
+              <h4 class="text-muted">Вы еще ни на кого не подписаны</h4>
+              <p class="text-muted">
+                Найдите интересных авторов и подпишитесь на их обновления
+              </p>
+              <%= link_to 'Посмотреть все посты', posts_path, class: 'btn btn-primary' %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="card-footer text-muted">
+          <div class="d-flex justify-content-between">
+            <span>Всего подписок: <%= @subscriptions.total_count if @subscriptions.respond_to?(:total_count) %></span>
+            <%= link_to 'Назад', :back, class: 'btn btn-sm btn-outline-secondary' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

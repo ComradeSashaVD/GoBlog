@@ -1,7 +1,9 @@
 class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
-    @posts = @user.posts.recent.page(params[:page]).per(10)
+    @posts = @user.posts.includes(:comments, :likes)
+                  .order(created_at: :desc)
+                  .page(params[:page]).per(10)
   end
 
   def subscribe
@@ -35,7 +37,15 @@ class UsersController < ApplicationController
   end
 
   def subscriptions
-    @subscriptions = current_user.subscribed_to_users.page(params[:page]).per(20)
+    # Получаем ID пользователей, на которых подписан текущий пользователь
+    subscribed_to_ids = Subscription.where(subscriber_id: current_user.id)
+                                    .pluck(:subscribed_to_id)
+
+    # Загружаем пользователей с пагинацией
+    @subscriptions = User.where(id: subscribed_to_ids)
+                         .includes(:posts)  # предзагрузка постов для счетчика
+                         .order(created_at: :desc)
+                         .page(params[:page]).per(10)
   end
 
   def subscribers

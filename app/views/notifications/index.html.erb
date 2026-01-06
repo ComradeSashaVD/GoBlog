@@ -1,0 +1,84 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h1 class="h3 mb-0">Уведомления</h1>
+          <% if @notifications.any? %>
+            <%= button_to 'Отметить все как прочитанные',
+                          mark_all_as_read_notifications_path,
+                          method: :patch,
+                          class: 'btn btn-sm btn-outline-primary',
+                          form: { class: 'd-inline' } %>
+          <% end %>
+        </div>
+
+        <div class="card-body">
+          <% if @notifications.any? %>
+            <div class="list-group">
+              <% @notifications.each do |notification| %>
+                <div class="list-group-item <%= 'list-group-item-light' if notification.read %>">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                      <div class="d-flex align-items-center mb-1">
+                        <% unless notification.read %>
+                          <span class="badge bg-primary me-2">Новое</span>
+                        <% end %>
+                        <i class="bi bi-bell me-2"></i>
+                        <span><%= notification.message %></span>
+                      </div>
+
+                      <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                          <i class="bi bi-clock"></i>
+                          <%= time_ago_in_words(notification.created_at) %> назад
+                        </small>
+
+                        <div>
+                          <% unless notification.read %>
+                            <%= button_to 'Прочитано',
+                                          mark_as_read_notification_path(notification),
+                                          method: :patch,
+                                          class: 'btn btn-sm btn-outline-success' %>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+
+            <% if @notifications.respond_to?(:total_pages) && @notifications.total_pages > 1 %>
+              <div class="mt-4 d-flex justify-content-center">
+                <%= paginate @notifications %>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="text-center py-5">
+              <i class="bi bi-bell-slash fs-1 text-muted mb-3"></i>
+              <h4 class="text-muted">Нет уведомлений</h4>
+              <p class="text-muted">
+                Когда кто-то лайкнет ваш пост, прокомментирует его или подпишется на вас,
+                вы увидите уведомление здесь.
+              </p>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="card-footer text-muted">
+          <div class="d-flex justify-content-between">
+            <span>
+              <% if @notifications.respond_to?(:unread) %>
+                Непрочитанных: <%= @notifications.unread.count %>
+              <% else %>
+                Всего: <%= @notifications.count %>
+              <% end %>
+            </span>
+            <%= link_to 'Назад', :back, class: 'btn btn-sm btn-outline-secondary' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

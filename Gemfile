@@ -54,6 +54,7 @@ gem 'simple_form'
 gem 'font-awesome-sass'
 gem 'hotwire-rails'  # для real-time уведомлений
 gem 'redis', '~> 4.0' # для Action Cable
+gem 'letter_opener', group: :development
 
 group :development do
   gem 'better_errors'
